@@ -92,6 +92,107 @@ footer {
 @media (max-width:480px) {
   .gallery { grid-template-columns:repeat(5,1fr); gap:2px; }
 }
+
+/* =========================
+   IMAGE LIGHTBOX
+========================= */
+.lightbox {
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,.88);
+  padding:40px 80px;
+}
+
+.lightbox.is-open {
+  display:flex;
+}
+
+.lightbox-image {
+  max-width:calc(100vw - 180px);
+  max-height:calc(100vh - 80px);
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  display:block;
+}
+
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+  position:absolute;
+  border:0;
+  background:transparent;
+  color:#fff;
+  cursor:pointer;
+  font-family:Helvetica,Arial,sans-serif;
+  z-index:2;
+}
+
+.lightbox-close {
+  top:18px;
+  right:28px;
+  font-size:34px;
+  line-height:1;
+}
+
+.lightbox-prev,
+.lightbox-next {
+  top:50%;
+  transform:translateY(-50%);
+  font-size:46px;
+  line-height:1;
+  padding:20px;
+}
+
+.lightbox-prev { left:15px; }
+.lightbox-next { right:15px; }
+
+.lightbox-prev:hover,
+.lightbox-next:hover,
+.lightbox-close:hover {
+  opacity:.6;
+}
+
+.lightbox-counter {
+  position:absolute;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  color:#fff;
+  font-size:12px;
+  letter-spacing:1px;
+}
+
+@media (max-width:680px) {
+  .lightbox {
+    padding:50px 45px;
+  }
+
+  .lightbox-image {
+    max-width:calc(100vw - 90px);
+    max-height:calc(100vh - 110px);
+  }
+
+  .lightbox-prev,
+  .lightbox-next {
+    font-size:34px;
+    padding:12px;
+  }
+
+  .lightbox-prev { left:2px; }
+  .lightbox-next { right:2px; }
+
+  .lightbox-close {
+    top:12px;
+    right:16px;
+    font-size:30px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -289,6 +390,85 @@ INSTAGRAM-STYLE GRID
 <footer>
 <a href="../">← Back to Photography</a>
 </footer>
+
+<!-- IMAGE LIGHTBOX -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Close">×</button>
+  <button class="lightbox-prev" id="lightboxPrev" type="button" aria-label="Previous image">‹</button>
+  <img class="lightbox-image" id="lightboxImage" src="" alt="">
+  <button class="lightbox-next" id="lightboxNext" type="button" aria-label="Next image">›</button>
+  <div class="lightbox-counter" id="lightboxCounter"></div>
+</div>
+
 </main>
+
+<script>
+(() => {
+  const items = Array.from(document.querySelectorAll(".gallery-item"));
+  const lightbox = document.getElementById("lightbox");
+  const image = document.getElementById("lightboxImage");
+  const close = document.getElementById("lightboxClose");
+  const prev = document.getElementById("lightboxPrev");
+  const next = document.getElementById("lightboxNext");
+  const counter = document.getElementById("lightboxCounter");
+
+  let current = 0;
+
+  function show(index) {
+    current = (index + items.length) % items.length;
+
+    const img = items[current].querySelector("img");
+    image.src = img.src;
+    image.alt = img.alt;
+
+    counter.textContent = `${current + 1} / ${items.length}`;
+    lightbox.classList.add("is-open");
+    lightbox.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+
+  function hide() {
+    lightbox.classList.remove("is-open");
+    lightbox.setAttribute("aria-hidden", "true");
+    image.src = "";
+    document.body.style.overflow = "";
+  }
+
+  items.forEach((item, index) => {
+    item.addEventListener("click", (event) => {
+      event.preventDefault();
+      show(index);
+    });
+  });
+
+  prev.addEventListener("click", (event) => {
+    event.stopPropagation();
+    show(current - 1);
+  });
+
+  next.addEventListener("click", (event) => {
+    event.stopPropagation();
+    show(current + 1);
+  });
+
+  close.addEventListener("click", (event) => {
+    event.stopPropagation();
+    hide();
+  });
+
+  lightbox.addEventListener("click", (event) => {
+    if (event.target === lightbox) hide();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (!lightbox.classList.contains("is-open")) return;
+
+    if (event.key === "Escape") hide();
+    if (event.key === "ArrowLeft") show(current - 1);
+    if (event.key === "ArrowRight") show(current + 1);
+  });
+})();
+</script>
+
 </body>
 </html>

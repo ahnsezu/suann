@@ -87,10 +87,10 @@ footer {
 @media (max-width:760px) {
   body { padding:20px; }
   header { align-items:flex-start; flex-direction:column; gap:18px; }
-  .gallery { grid-template-columns:repeat(2,1fr); gap:12px; }
+  .gallery { grid-template-columns:repeat(3,1fr); gap:3px; }
 }
 @media (max-width:480px) {
-  .gallery { grid-template-columns:1fr; }
+  .gallery { grid-template-columns:repeat(3,1fr); gap:2px; }
 }
 </style>
 </head>
@@ -106,15 +106,25 @@ footer {
 <section class="gallery" aria-label="LANDSCAPES gallery">
 
 <!--
-사진을 추가하려면 아래 형식을 복사하세요.
+INSTAGRAM-STYLE GRID
+
+사진 파일을 landscapes 폴더에 올린 뒤,
+아래 항목을 복사해서 파일명만 바꿔주세요.
 
 <a class="gallery-item" href="./01.jpg" target="_blank">
   <img src="./01.jpg" alt="LANDSCAPES 01">
-  <div class="caption">01</div>
+</a>
+
+<a class="gallery-item" href="./02.jpg" target="_blank">
+  <img src="./02.jpg" alt="LANDSCAPES 02">
+</a>
+
+<a class="gallery-item" href="./03.jpg" target="_blank">
+  <img src="./03.jpg" alt="LANDSCAPES 03">
 </a>
 -->
 
-<div class="empty-message">Selected works — coming soon.</div>
+<!-- LANDSCAPES PHOTOS GO HERE -->
 
 </section>
 
